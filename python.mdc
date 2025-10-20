@@ -1,0 +1,94 @@
+---
+description: KISS-style Python coding and structure preferences
+globs: ["**/*.py"]
+alwaysApply: false
+---
+
+user_rules:
+  - id: general_philosophy
+    summary: "Follow KISS and Pythonic principles"
+    description: |
+      • Keep it simple, direct, and practical — avoid over-engineering.
+      • Follow Pythonic conventions: readability, explicitness, and clarity.
+      • Do not introduce abstractions, layers, or patterns unless they bring tangible value.
+      • Simplicity and maintainability are more important than theoretical purity.
+
+  - id: code_style
+    summary: "Concise code, minimal comments, simple naming"
+    description: |
+      • Keep code short, direct, and readable — no redundant docstrings or comments.
+      • Comment only when the reasoning is non-obvious.
+      • Prefer short, intuitive names over verbose ones.
+        ✅ user_data
+        🚫 collected_user_profile_information
+      • Avoid splitting into multiple files unless it improves clarity or reuse.
+      • Use consistent formatting (PEP8 core ideas) but don’t be dogmatic about line length or imports.
+
+  - id: function_class_design
+    summary: "Practical and focused function design"
+    description: |
+      • Each function should do one clear thing and be easy to read top-down.
+      • Avoid deep OOP hierarchies — use functions or dataclasses when possible.
+      • Limit the number of parameters; avoid excessive configuration options.
+      • Use type hints for clarity, but not for verbosity.
+        ✅ def add(a: int, b: int) -> int:
+        🚫 def add(a: int | float | Decimal, b: int | float | Decimal) -> int | float | Decimal:
+
+  - id: comments_documentation
+    summary: "Explain why, not what"
+    description: |
+      • Comments should clarify intent or reasoning — never restate obvious behavior.
+      • Write short, meaningful docstrings only when the function’s purpose isn’t self-evident.
+        🚫 # increment i by 1
+        ✅ # ensure offset doesn’t overflow index
+
+  - id: architecture_files
+    summary: "Flat and logical file structure"
+    description: |
+      • Keep project structure simple — prefer a few cohesive modules to dozens of tiny files.
+      • Example:
+          src/
+            app.py
+            utils.py
+            models.py
+      • Avoid micro-modules or deep folder trees unless absolutely necessary.
+
+  - id: imports_dependencies
+    summary: "Minimal dependencies and clean imports"
+    description: |
+      • Use only essential libraries; prefer the standard library when possible.
+      • Avoid circular imports and long dependency chains.
+      • Group imports logically, not alphabetically if that reduces clarity.
+
+  - id: error_handling
+    summary: "Straightforward and explicit error handling"
+    description: |
+      • Use simple try/except blocks.
+      • Avoid wrapping exceptions unless it improves readability.
+      • Fail fast and clearly; prefer explicit errors over silent handling.
+
+  - id: example_code_style
+    summary: "Example: preferred vs avoid"
+    description: |
+      ✅ Preferred
+      ```python
+      def fetch_user(uid: int):
+          """Get user info from cache or DB."""
+          if user := cache.get(uid):
+              return user
+          return db.get_user(uid)
+      ```
+
+      🚫 Avoid
+      ```python
+      def fetch_user_by_identifier(user_identifier: int) -> Optional[User]:
+          """
+          Fetch the user object either from the in-memory cache or from the persistent
+          database if not present in the cache.
+          """
+          cached_user_object = cache.retrieve_from_cache(user_identifier)
+          if cached_user_object is not None:
+              return cached_user_object
+          else:
+              return database_connector.retrieve_user_record(user_identifier)
+      ```
