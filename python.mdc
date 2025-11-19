@@ -1,6 +1,6 @@
 ---
 description: KISS-style Python coding and structure preferences
-globs: ["**/*.py"]
+globs: *.py, **/*.py
 alwaysApply: false
 ---
 
