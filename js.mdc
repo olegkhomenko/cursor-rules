@@ -1,0 +1,124 @@
+---
+description: KISS-style JavaScript/TypeScript coding preferences for React/Next.js
+globs: *.js, *.jsx, *.ts, *.tsx, **/*.js, **/*.jsx, **/*.ts, **/*.tsx
+alwaysApply: false
+---
+user_rules:
+  - id: general_philosophy
+    summary: "Keep it simple and practical"
+    description: |
+      • Follow KISS principles — avoid over-engineering
+      • Prefer functional patterns over complex OOP
+      • Simplicity and clarity over theoretical perfection
+
+  - id: typescript_usage
+    summary: "TypeScript for clarity, not verbosity"
+    description: |
+      • Use explicit typing for function params and returns
+      • Avoid overly complex generic types
+        ✅ function fetchUser(id: string): Promise<User>
+        🚫 function fetchUser<T extends BaseEntity>(id: string): Promise<ExtractType<T>>
+
+  - id: react_patterns
+    summary: "Modern React with hooks"
+    description: |
+      • Use functional components with hooks — no class components
+      • Keep components focused and single-purpose
+      • Extract complex logic into custom hooks
+      • Use 'use client' directive only when needed (Next.js)
+
+  - id: state_management
+    summary: "Simple state, clear data flow"
+    description: |
+      • Use useCallback/useMemo only when performance matters
+      • Keep state close to where it's used
+      • Avoid prop drilling — lift state only when needed
+
+  - id: naming_conventions
+    summary: "Clear, consistent naming"
+    description: |
+      • Prefix event handlers with 'handle': handleClick, handleSubmit
+      • Prefix booleans with 'is', 'has', 'can': isLoading, hasError
+      • Keep names short but descriptive
+        ✅ const isLoading = true; const handleClick = () => {};
+        🚫 const loadingStatus = true; const clickHandler = () => {};
+
+  - id: api_data_fetching
+    summary: "Clean API calls"
+    description: |
+      • Create dedicated API client modules (e.g., lib/api/)
+      • Type API responses with interfaces
+      • Keep API logic separate from components
+        ✅ export async function fetchTopics(): Promise<Topic[]> { }
+
+  - id: comments_documentation
+    summary: "Explain why, not what"
+    description: |
+      • Comment only for non-obvious logic or reasoning
+      • Let code be self-documenting through clear naming
+        🚫 // Set loading to true
+        ✅ // Prevent race condition from concurrent requests
+
+  - id: error_handling
+    summary: "Handle errors properly"
+    description: |
+      • Always use try/catch for async operations
+      • Log errors with context: console.error('Failed to load topics:', error)
+
+  - id: hooks_best_practices
+    summary: "Custom hooks for reusable logic"
+    description: |
+      • Extract complex stateful logic into custom hooks
+      • Name with 'use' prefix: useAuth, useVoiceCall
+      • Use refs for mutable values that shouldn't trigger re-renders
+
+  - id: websocket_realtime
+    summary: "Handle WebSocket connections carefully"
+    description: |
+      • Use refs to store WebSocket instances and callbacks
+      • Clean up connections in useEffect cleanup
+      • Handle reconnection and error states explicitly
+
+  - id: example_code_style
+    summary: "Example: preferred vs avoid"
+    description: |
+      ✅ Preferred
+      ```typescript
+      export default function TopicCard({ topic, onSelect }: Props) {
+        const [isHovered, setIsHovered] = useState(false);
+
+        const handleClick = () => {
+          onSelect(topic.id);
+        };
+
+        return (
+          <button
+            onClick={handleClick}
+            onMouseEnter={() => setIsHovered(true)}
+            className={`card ${isHovered ? 'card-hover' : ''}`}
+          >
+            <h3>{topic.name}</h3>
+          </button>
+        );
+      }
+      ```
+
+      🚫 Avoid
+      ```typescript
+      export default function TopicCardComponent(props: TopicCardComponentProps) {
+        const [isCurrentlyBeingHoveredByMouse, setIsCurrentlyBeingHoveredByMouse] = useState<boolean>(false);
+
+        const handleTopicCardClickEvent = () => {
+          props.onTopicSelectionCallback(props.topicData.identifier);
+        };
+
+        return (
+          <button
+            onClick={handleTopicCardClickEvent}
+            onMouseEnter={() => setIsCurrentlyBeingHoveredByMouse(true)}
+          >
+            <h3>{props.topicData.name}</h3>
+          </button>
+        );
+      }
+      ```
